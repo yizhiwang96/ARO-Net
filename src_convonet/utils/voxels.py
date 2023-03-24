@@ -11,7 +11,7 @@ from src.common import make_3d_grid
 class VoxelGrid:
     def __init__(self, data, loc=(0., 0., 0.), scale=1):
         assert(data.shape[0] == data.shape[1] == data.shape[2])
-        data = np.asarray(data, dtype=np.bool)
+        data = np.asarray(data, dtype='bool')
         loc = np.asarray(loc)
         self.data = data
         self.loc = loc
@@ -196,7 +196,7 @@ class VoxelGrid:
         i3 = i3[mask]
 
         # Compute values, default value outside box is 0
-        occ = np.zeros(points.shape[:-1], dtype=np.bool)
+        occ = np.zeros(points.shape[:-1], dtype='bool')
         occ[mask] = self.data[i1, i2, i3]
 
         return occ

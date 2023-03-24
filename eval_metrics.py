@@ -11,29 +11,31 @@ import math
 
 
 def cal_metrics(path_ref, path_rec, shape_id, dir_metrics, path_qry, path_occ, name_dataset):
+    try:
+        mesh_ref, pts_ref = sample(path_ref)
+        mesh_rec, pts_rec = sample(path_rec)
 
-    mesh_ref, pts_ref = sample(path_ref)
-    mesh_rec, pts_rec = sample(path_rec)
+        ret = eval_chamfer(pts_rec, pts_ref)
 
-    ret = eval_chamfer(pts_rec, pts_ref)
+        qry = np.load(path_qry)
+        if name_dataset == 'shapenet':
+            occ_gt = np.load(path_occ)
+        else:
+            sdf = np.load(path_occ)
+            occ_gt = (sdf >= 0).astype(np.float32) # sdf >= 0 means occ = 1
 
-    qry = np.load(path_qry)
-    if name_dataset == 'shapenet':
-        occ_gt = np.load(path_occ)
-    else:
-        sdf = np.load(path_occ)
-        occ_gt = (sdf >= 0).astype(np.float32) # sdf >= 0 means occ = 1
+        iou = eval_iou(mesh_rec, qry, occ_gt)
+        dist_hsdf_rec2ref, dist_hsdf_ref2rec, dist_hsdf_max = eval_hausdoff(pts_rec, pts_ref)
 
-    iou = eval_iou(mesh_rec, qry, occ_gt)
-    dist_hsdf_rec2ref, dist_hsdf_ref2rec, dist_hsdf_max = eval_hausdoff(pts_rec, pts_ref)
+        fout = open(os.path.join(dir_metrics, shape_id + '.txt'), 'w')
+        for idx in range(len(ret)):
+            fout.write(str(ret[idx]) + ' ')
+        fout.write(str(iou) + ' ')
+        fout.write(str(dist_hsdf_rec2ref) + ' ' + str(dist_hsdf_ref2rec) + ' ' + str(dist_hsdf_max))
 
-    fout = open(os.path.join(dir_metrics, shape_id + '.txt'), 'w')
-    for idx in range(len(ret)):
-        fout.write(str(ret[idx]) + ' ')
-    fout.write(str(iou) + ' ')
-    fout.write(str(dist_hsdf_rec2ref) + ' ' + str(dist_hsdf_ref2rec) + ' ' + str(dist_hsdf_max))
-
-    fout.close()
+        fout.close()
+    except:
+        print("[Warning] Fail to evaluate:",path_rec)
     
 
 
@@ -138,10 +140,13 @@ def report(args):
     ret = np.zeros(n_metrics)
 
     for shape_id in id_shapes:
-        content = open(os.path.join(dir_metrics, shape_id + '.txt')).read()
-        tmp = content.split(' ')
-        for idx in range(n_metrics):
-            ret[idx] += float(tmp[idx])
+        try:
+            content = open(os.path.join(dir_metrics, shape_id + '.txt')).read()
+            tmp = content.split(' ')
+            for idx in range(n_metrics):
+                ret[idx] += float(tmp[idx])
+        except:
+            print("[Warning] Fail to load:",os.path.join(dir_metrics, shape_id + '.txt'))
 
     for idx in range(n_metrics):
         print(name_metrics[idx] + ': ' + str(ret[idx] / len(id_shapes)))

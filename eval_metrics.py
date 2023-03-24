@@ -137,6 +137,7 @@ def report(args):
 
     name_metrics = ["chamfer_L1", "chamfer_L2", "fscore", "precision", "recall", "iou", 'hausdoff_rec2ref', 'hausdoff_ref2rec', 'dist_hsdf_max']
     n_metrics = len(name_metrics)
+    n_valid = 0
     ret = np.zeros(n_metrics)
 
     for shape_id in id_shapes:
@@ -145,11 +146,13 @@ def report(args):
             tmp = content.split(' ')
             for idx in range(n_metrics):
                 ret[idx] += float(tmp[idx])
+            n_valid+=1
         except:
             print("[Warning] Fail to load:",os.path.join(dir_metrics, shape_id + '.txt'))
 
+    print(args.name_exp,args.name_dataset,f'({n_valid}/{len(id_shapes)})')
     for idx in range(n_metrics):
-        print(name_metrics[idx] + ': ' + str(ret[idx] / len(id_shapes)))
+        print(name_metrics[idx] + ': ' + str(ret[idx] / n_valid))
 
     return
 

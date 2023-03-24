@@ -73,17 +73,16 @@ To test our pretrained models,
 # ABC
 python reconstruct.py --name_exp pretrained_abc --name_ckpt aronet_abc.ckpt --name_dataset abc --use_dist_hit --n_pts_test 2048
 
-
-# ShapeNet Chair (using IM-Net training data)
+# ShapeNet Chair (trained w/ IM-Net data)
 python reconstruct.py --name_exp pretrained_chairs --name_ckpt aronet_chairs_gt_imnet.ckpt --name_dataset shapenet --categories_test 03001627, --use_dist_hit --n_pts_test 2048 --mc_threshold 0.5
 
-# ShapeNet Chair (using OCC-Net training data)
+# ShapeNet Chair (trained w/ OCC-Net data)
 python reconstruct.py --name_exp pretrained_chairs --name_ckpt aronet_chairs_gt_occnet.ckpt --name_dataset shapenet --categories_test 03001627, --norm_coord --n_pts_test 2048 --mc_threshold 0.2
 
-# ShapeNet Airplane (using IM-Net training data)
+# ShapeNet Airplane (trained w/ IM-Net data)
 python reconstruct.py --name_exp pretrained_chairs --name_ckpt aronet_chairs_gt_imnet.ckpt --name_dataset shapenet --categories_test 02691156, --use_dist_hit --n_pts_test 2048 --mc_threshold 0.5
 
-# ShapeNet Airplane (using OCC-Net training data)
+# ShapeNet Airplane (trained w/ OCC-Net data)
 python reconstruct.py --name_exp pretrained_chairs --name_ckpt aronet_chairs_gt_occnet.ckpt --name_dataset shapenet --categories_test 02691156, --norm_coord --n_pts_test 2048 --mc_threshold 0.2
 
 ```

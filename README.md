@@ -33,7 +33,7 @@ python setup.py install
 
 ## Dataset
 
-The dataset used in our experiments can be found in [OneDrive](https://1drv.ms/u/s!AkDQSKsmQQCghcNbst1PuHeb-obv7w?e=wlGLCK) and [Baidu Disk](https://pan.baidu.com/s/1M1UQHV2Wv1g3lemqErUFlg) (Password: 2vde).
+The dataset (~20GB) used in our experiments can be found in [OneDrive](https://1drv.ms/u/s!AkDQSKsmQQCghcQfKvYspGIW031LeA?e=NDzEi6) and [Baidu Disk](https://pan.baidu.com/s/1xHF79UFiHZJjx9J44V4lYA) (Password: so9v).
 
 It contains ABC dataset (the first Chunk), and ShapeNet (Chairs and Airplanes).
 
@@ -71,13 +71,21 @@ Put them under the folder `experiments`. For ShapeNet dataset, we trained ARO-Ne
 To test our pretrained models,
 ```
 # ABC
-python reconstruct.py --name_exp pretrained_abc --name_ckpt aronet_shapenet_chairs_gt_imnet --name_dataset abc --use_dist_hit True --norm_coord False
+python reconstruct.py --name_exp pretrained_abc --name_ckpt aronet_abc.ckpt --name_dataset abc --use_dist_hit --n_pts_test 2048
 
-# ShapeNet Chair
-python reconstruct.py --name_exp pretrained_shapenet_chairs --name_ckpt aronet_shapenet_chairs_gt_occnet.ckpt --name_dataset shapenet --categories_test 03001627, --use_dist_hit False --mc_threshold 0.2
 
-# ShapeNet Airplane
-python reconstruct.py --name_exp pretrained_shapenet_chairs --name_ckpt aronet_shapenet_chairs_gt_occnet.ckpt --name_dataset shapenet --name_dataset 02691156, --use_dist_hit False
+# ShapeNet Chair (using IM-Net training data)
+python reconstruct.py --name_exp pretrained_chairs --name_ckpt aronet_chairs_gt_imnet.ckpt --name_dataset shapenet --categories_test 03001627, --use_dist_hit --n_pts_test 2048 --mc_threshold 0.5
+
+# ShapeNet Chair (using OCC-Net training data)
+python reconstruct.py --name_exp pretrained_chairs --name_ckpt aronet_chairs_gt_occnet.ckpt --name_dataset shapenet --categories_test 03001627, --norm_coord --n_pts_test 2048 --mc_threshold 0.2
+
+# ShapeNet Airplane (using IM-Net training data)
+python reconstruct.py --name_exp pretrained_chairs --name_ckpt aronet_chairs_gt_imnet.ckpt --name_dataset shapenet --categories_test 02691156, --use_dist_hit --n_pts_test 2048 --mc_threshold 0.5
+
+# ShapeNet Airplane (using OCC-Net training data)
+python reconstruct.py --name_exp pretrained_chairs --name_ckpt aronet_chairs_gt_occnet.ckpt --name_dataset shapenet --categories_test 02691156, --norm_coord --n_pts_test 2048 --mc_threshold 0.2
+
 ```
 You can also modify `--n_pts_test` to set the input of points of objects, we pre-sampled `1024` and `2048` points from meshes for testing.
 
@@ -87,10 +95,10 @@ We use Fibonacci sampling to generate 48 anchors for our ARO-Net. Other anchor s
 
 To train ARO-Net on ABC dataset or ShapeNet:
 ```
-python train.py --name_exp base_model_chairs --name_dataset shapenet --categories_train 03001627,
-python train.py --name_exp base_model_abc --name_dataset abc --use_dist_hit True
+python train.py --name_exp base_model_abc --name_dataset abc --use_dist_hit --norm_coord
+python train.py --name_exp base_model_chairs --name_dataset shapenet --categories_train 03001627, --norm_coord --gt_source occnet
 ```
-It is recommended to set `use_dist_hit` to `True` when training on abc dataset (an auxiliary loss to predict anchor-query to surface distance) when training (it will bring some marginal performance gain). To use this auxiliary loss, first run `cal_hit_dist.py`.
+It is recommended to set `use_dist_hit` to `True` when training on abc dataset or shapenet (im-net gt) (an auxiliary loss to predict anchor-query to surface distance) when training (it will bring some marginal performance gain). To use this auxiliary loss, first run `cal_hit_dist.py`.
 
 To train ARO-Net on single shape with data augmentation:
 ```
@@ -104,13 +112,13 @@ Check all training options in `options.py`. You need one NVIDIA A100 (80G) to tr
 To reconstruct meshes on test sets:
 ```
 # ABC
-python reconstruct.py --name_exp base_model_abc --name_ckpt 600_301101_xxx_xxx.ckpt --name_dataset abc --use_dist_hit True
+python reconstruct.py --name_exp base_model_abc --name_ckpt 600_301101_xxx_xxx.ckpt --name_dataset abc --use_dist_hit
 
 # ShapeNet Chair
-python reconstruct.py --name_exp base_model_chairs --name_ckpt 600_301101_xxx_xxx.ckpt --name_dataset shapenet --categories_test 03001627,
+python reconstruct.py --name_exp base_model_chairs --name_ckpt 600_301101_xxx_xxx.ckpt --name_dataset shapenet --categories_test 03001627, --norm_coord
 
 # ShapeNet Airplane
-python reconstruct.py --name_exp base_model_chairs --name_ckpt 600_301101_xxx_xxx.ckpt --name_dataset shapenet --name_dataset 02691156,
+python reconstruct.py --name_exp base_model_chairs --name_ckpt 600_301101_xxx_xxx.ckpt --name_dataset shapenet --name_dataset 02691156, --norm_coord
 ```
 
 To evalute HD, CD, and IoU:

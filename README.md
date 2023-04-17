@@ -18,7 +18,7 @@ Homepage: [ARO-Net]()
 To setup a conda environment, and build dependencies:
 ```
 # create conda environment for ARO-Net
-conda create -n aro-net python=3.9 pytorch-gpu -c pytorch
+conda create -n aro-net python=3.9 pytorch-gpu -c conda-forge
 conda activate aro-net
 pip install trimesh open3d tensorboard Cython
 

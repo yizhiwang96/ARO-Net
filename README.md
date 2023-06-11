@@ -7,7 +7,8 @@ ARO-Net: Learning Implicit Fields from Anchored Radial Observations. CVPR. 2023.
 Yizhi Wang*, Zeyu Huang*, Ariel Shamir, Hui Huang, Hao Zhang, Ruizhen Hu.
 
 Paper: [arxiv](https://arxiv.org/abs/2212.10275)
-Homepage: [ARO-Net]()
+Homepage: [ARO-Net](https://vcc.tech/research/2023/ARO-Net)
+Video: [Youtube](https://www.youtube.com/watch?v=RVoOkgbi9lk&t=5s)
 
 <img src='imgs/aro-net.jpg'/>
 

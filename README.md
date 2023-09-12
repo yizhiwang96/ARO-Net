@@ -59,6 +59,9 @@ ARO-Net
     │   │   │──04_splits            
     ├── anchors
 ```
+### Customize Your Own Dataset
+
+We followed the [script](https://github.com/ErlerPhilipp/points2surf/blob/2af6e0facf58422ed12e0c676c70199cd0dfbb43/make_dataset.py#L406C24-L406C46) in [Points2Surf]((https://github.com/ErlerPhilipp/points2surf)) to sample `qry_pts` and calculate their `signed distance`. Note that we did not use their way of normalization, our way of normalization can be found in this [link](https://github.com/yizhiwang96/ARO-Net/blob/main/data_processing/norm_and_sample_mesh.py), where the length of body diagonal of 3D bounding box is normalized to 1.
 
 ## Quick Testing
 
